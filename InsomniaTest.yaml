@@ -1,0 +1,807 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: M295 Game Backend - UserStory Tests
+meta:
+  id: wrk_e9afb211d2964b7d8b1c1922dec71267
+  created: 1769718644947
+  modified: 1769718644947
+  description: ""
+collection:
+  - name: US1 - Account erstellen
+    meta:
+      id: fld_f348d653f06a41bbb3f8417dc57b9517
+      created: 1769718644956
+      modified: 1769760109181
+      sortKey: -1769718645095
+      description: ""
+    children:
+      - url: "{{ base_url }}/users"
+        name: US1.1 Create user -> 201
+        meta:
+          id: req_e53953fe4d604765afa85b1b93bce7b5
+          created: 1769718644958
+          modified: 1769759221370
+          isPrivate: false
+          description: ""
+          sortKey: -1769718645060
+        method: POST
+        body:
+          mimeType: application/json
+          text: '{"username":"u_insomnia_1","email":"u_insomnia_1@test.ch","password":"test123"}'
+        headers:
+          - name: Content-Type
+            value: application/json
+        scripts:
+          afterResponse: |
+            insomnia.test('US1.1 create user -> 201', () => {
+              insomnia.expect(insomnia.response.status).to.equal('Created');
+            });
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/users"
+        name: US1.2 Invalid data -> 400
+        meta:
+          id: req_2e0f8bdcf1df4fb89e782db7cbf8adbd
+          created: 1769718644959
+          modified: 1769723864353
+          isPrivate: false
+          description: ""
+          sortKey: -1769718645010
+        method: POST
+        body:
+          mimeType: application/json
+          text: '{"username":"","email":"not-an-email","password":""}'
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: basic
+          useISO88591: false
+          username: "{{ player_user }}"
+          password: "{{ player_pass }}"
+          disabled: false
+        scripts:
+          afterResponse: |
+            insomnia.test('US1.2 invalid user -> 400', () => {
+              insomnia.expect(insomnia.response.status).to.equal('Bad Request');
+            });
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/users"
+        name: US1.3 Duplicate username/email -> 409
+        meta:
+          id: req_c553e84c95f14f47b3e5c4aa99b1d297
+          created: 1769718644960
+          modified: 1769759235275
+          isPrivate: false
+          description: ""
+          sortKey: -1769718644960
+        method: POST
+        body:
+          mimeType: application/json
+          text: '{"username":"u_insomnia_1","email":"u_insomnia_1@test.ch","password":"test123"}'
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: basic
+          useISO88591: false
+          username: "{{ player_user }}"
+          password: "{{ player_pass }}"
+          disabled: false
+        scripts:
+          afterResponse: |
+            insomnia.test('US1.3 duplicate user -> 409', () => {
+              insomnia.expect(insomnia.response.status).to.equal('Conflict');
+            });
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: US2 - Stats speichern (SaveStats)
+    meta:
+      id: fld_0229214e157546beb4cc509b4c6527ae
+      created: 1769718644962
+      modified: 1769760817320
+      sortKey: -1769718645045
+      description: ""
+    children:
+      - url: "{{ base_url }}/users/{{ user_id }}/stats"
+        name: US2.1 Not logged in -> 401
+        meta:
+          id: req_1e9c6a7935384f33a63d09a884ec7692
+          created: 1769718644963
+          modified: 1769723230130
+          isPrivate: false
+          description: ""
+          sortKey: -1769718645068
+        method: POST
+        scripts:
+          afterResponse: >
+            insomnia.test('US2.1 not logged in -> 401', () => {
+              insomnia.expect(insomnia.response.status).to.equal('Unauthorized');
+            });
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/users/{{ user_id }}/stats"
+        name: US2.2 PLAYER SaveStats -> 201
+        meta:
+          id: req_c8e07319541244feb9000d88b4282312
+          created: 1769718644964
+          modified: 1769723860653
+          isPrivate: false
+          description: ""
+          sortKey: -1769718645018
+        method: POST
+        authentication:
+          type: basic
+          username: "{{ player_user }}"
+          password: "{{ player_pass }}"
+        scripts:
+          afterResponse: |
+            insomnia.test('US2.2 player savestats -> 201', () => {
+              insomnia.expect(insomnia.response.status).to.equal('Created');
+            });
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/users/{{ user_id }}/stats"
+        name: US2.3 ADMIN wrong role -> 403
+        meta:
+          id: req_f80d1f76eda8466f8558e94c584ad8a4
+          created: 1769718644968
+          modified: 1769722674904
+          isPrivate: false
+          description: ""
+          sortKey: -1769718644968
+        method: POST
+        authentication:
+          type: basic
+          username: "{{ admin_user }}"
+          password: "{{ admin_pass }}"
+        scripts:
+          afterResponse: |
+            insomnia.test('US2.3 admin forbidden -> 403', () => {
+              insomnia.expect(insomnia.response.status).to.equal('Forbidden');
+            });
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: US3 - Item nehmen (TakeItem)
+    meta:
+      id: fld_e3db0a3b266547298ffee8fcf0d705e3
+      created: 1769718644971
+      modified: 1769760110182
+      sortKey: -1769718645020
+      description: ""
+    children:
+      - url: "{{ base_url }}/users/{{ user_id }}/items/{{ item_id }}/take"
+        name: US3.1 Not logged in -> 401
+        meta:
+          id: req_c7e51a8849964bcda5802c7e91efd95c
+          created: 1769718644973
+          modified: 1769723236679
+          isPrivate: false
+          description: ""
+          sortKey: -1769718645076
+        method: POST
+        scripts:
+          afterResponse: >
+            insomnia.test('US3.1 not logged in -> 401', () => {
+              insomnia.expect(insomnia.response.status).to.equal('Unauthorized');
+            });
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/users/{{ user_id }}/items/{{ item_id }}/take"
+        name: US3.2 PLAYER TakeItem (stock>0) -> 201
+        meta:
+          id: req_d05f019afa8a4afea61d1f7d81f252f6
+          created: 1769718644974
+          modified: 1769723238293
+          isPrivate: false
+          description: ""
+          sortKey: -1769718645026
+        method: POST
+        authentication:
+          type: basic
+          username: "{{ player_user }}"
+          password: "{{ player_pass }}"
+        scripts:
+          afterResponse: |
+            insomnia.test('US3.2 take item -> 201', () => {
+              insomnia.expect(insomnia.response.status).to.equal('Created');
+            });
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/users/{{ user_id }}/items/{{ item_id }}/take"
+        name: US3.3 ADMIN wrong role -> 403
+        meta:
+          id: req_c6544e13d32e4c63bb96475318f9e33b
+          created: 1769718644975
+          modified: 1769723239731
+          isPrivate: false
+          description: ""
+          sortKey: -1769718645001
+        method: POST
+        authentication:
+          type: basic
+          username: "{{ admin_user }}"
+          password: "{{ admin_pass }}"
+        scripts:
+          afterResponse: |
+            insomnia.test('US3.3 admin forbidden -> 403', () => {
+              insomnia.expect(insomnia.response.status).to.equal('Forbidden');
+            });
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/users/{{ user_id }}/items/{{ item_id }}/take"
+        name: US3.4 stock=0 -> 409 (set item_id to one with stock 0)
+        meta:
+          id: req_26a4df967faf44758d6f6bc2b097f1cf
+          created: 1769718644976
+          modified: 1769759884652
+          isPrivate: false
+          description: ""
+          sortKey: -1769718644994.75
+        method: POST
+        authentication:
+          type: basic
+          username: "{{ player_user }}"
+          password: "{{ player_pass }}"
+        scripts:
+          afterResponse: |
+            insomnia.test('US3.4 stock zero -> 409', () => {
+              insomnia.expect(insomnia.response.status).to.equal('Conflict');
+            });
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/users/{{ user_id }}/items/{{ item_id }}/drop"
+        name: US3.5 – PLAYER DropItem erfolgreich → 200
+        meta:
+          id: req_485e549ac996492b9afca901465aeed9
+          created: 1769759780284
+          modified: 1769759962372
+          isPrivate: false
+          description: ""
+          sortKey: -1769718644988.5
+        method: POST
+        headers:
+          - name: User-Agent
+            value: insomnia/12.2.0
+            description: ""
+            disabled: false
+        authentication:
+          type: basic
+          useISO88591: false
+          username: "{{ player_user }}"
+          password: "{{ player_user }}"
+          disabled: false
+        scripts:
+          afterResponse: |
+            insomnia.test('US3.5 – PLAYER DropItem erfolgreich → 200', () => {
+              insomnia.expect(insomnia.response.status).to.equal('OK');
+            });
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: US4 - Achievements sehen
+    meta:
+      id: fld_9fcea3238fef4523a65242e3cd61c894
+      created: 1769718644977
+      modified: 1769760110378
+      sortKey: -1769718645007.5
+      description: ""
+    children:
+      - url: "{{ base_url }}/users/{{ user_id }}/achievements"
+        name: US4.1 Not logged in -> 401
+        meta:
+          id: req_941864fd585742389bbf6f6ac22ce1bd
+          created: 1769718644978
+          modified: 1769723244015
+          isPrivate: false
+          description: ""
+          sortKey: -1769718645079
+        method: GET
+        scripts:
+          afterResponse: >
+            insomnia.test('US4.1 not logged in -> 401', () => {
+              insomnia.expect(insomnia.response.status).to.equal('Unauthorized');
+            });
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/users/{{ user_id }}/achievements"
+        name: US4.2 PLAYER Get own achievements -> 200 (empty list ok)
+        meta:
+          id: req_dded4496205143cc8290be1f248f7fc8
+          created: 1769718644979
+          modified: 1769759274290
+          isPrivate: false
+          description: ""
+          sortKey: -1769718644979
+        method: GET
+        authentication:
+          type: basic
+          username: "{{ player_user }}"
+          password: "{{ player_pass }}"
+        scripts:
+          afterResponse: |
+            insomnia.test('US4.2 get achievements -> 200', () => {
+              insomnia.expect(insomnia.response.status).to.equal('OK');
+            });
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: US5 - Item verwalten (Admin)
+    meta:
+      id: fld_589be0068d23455687d8b6c6454a4470
+      created: 1769718644981
+      modified: 1769760111203
+      sortKey: -1769718645001.25
+      description: ""
+    children:
+      - url: "{{ base_url }}/items"
+        name: US5.1 Not logged in -> 401
+        meta:
+          id: req_c12569c352cb4ca28d4cb69cf2b34d56
+          created: 1769718644982
+          modified: 1769723248445
+          isPrivate: false
+          description: ""
+          sortKey: -1769718645093
+        method: POST
+        body:
+          mimeType: application/json
+          text: '{"code":"ITM1","name":"Sword","rarity":"COMMON","stock":3}'
+        headers:
+          - name: Content-Type
+            value: application/json
+        scripts:
+          afterResponse: >
+            insomnia.test('US5.1 not logged in -> 401', () => {
+              insomnia.expect(insomnia.response.status).to.equal('Unauthorized');
+            });
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/items"
+        name: US5.2 PLAYER -> 403
+        meta:
+          id: req_34b9ff0537be4c47882e2c6b693e4623
+          created: 1769718644988
+          modified: 1769723249769
+          isPrivate: false
+          description: ""
+          sortKey: -1769718645043
+        method: POST
+        body:
+          mimeType: application/json
+          text: '{"code":"ITM1","name":"Sword","rarity":"COMMON","stock":3}'
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: basic
+          username: "{{ player_user }}"
+          password: "{{ player_pass }}"
+        scripts:
+          afterResponse: |
+            insomnia.test('US5.2 player forbidden -> 403', () => {
+              insomnia.expect(insomnia.response.status).to.equal('Forbidden');
+            });
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/items"
+        name: US5.3 ADMIN invalid -> 400
+        meta:
+          id: req_147a8620090344549527ff78d06fb03b
+          created: 1769718644989
+          modified: 1769723251144
+          isPrivate: false
+          description: ""
+          sortKey: -1769718645018
+        method: POST
+        body:
+          mimeType: application/json
+          text: '{"code":"","name":"","rarity":"COMMON","stock":-1}'
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: basic
+          username: "{{ admin_user }}"
+          password: "{{ admin_pass }}"
+        scripts:
+          afterResponse: |
+            insomnia.test('US5.3 invalid item -> 400', () => {
+              insomnia.expect(insomnia.response.status).to.equal('Bad Request');
+            });
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/items"
+        name: US5.4 ADMIN create item -> 201
+        meta:
+          id: req_d3b41e8dc4d4485f8086e48115d24ede
+          created: 1769718644991
+          modified: 1769723252429
+          isPrivate: false
+          description: ""
+          sortKey: -1769718645005.5
+        method: POST
+        body:
+          mimeType: application/json
+          text: '{"code":"ITM_INS_1","name":"Sword","rarity":"COMMON","stock":3}'
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: basic
+          username: "{{ admin_user }}"
+          password: "{{ admin_pass }}"
+        scripts:
+          afterResponse: |
+            insomnia.test('US5.4 create item -> 201', () => {
+              insomnia.expect(insomnia.response.status).to.equal('Created');
+            });
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/items"
+        name: "US5.5 ADMIN duplicate code -> 409 "
+        meta:
+          id: req_bfb98d05f3f3481ca1eed5d4a6338241
+          created: 1769718644992
+          modified: 1769759291495
+          isPrivate: false
+          description: ""
+          sortKey: -1769718644999.25
+        method: POST
+        body:
+          mimeType: application/json
+          text: '{"code":"ITM_INS_1","name":"Sword","rarity":"COMMON","stock":3}'
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: basic
+          username: "{{ admin_user }}"
+          password: "{{ admin_pass }}"
+        scripts:
+          afterResponse: |
+            insomnia.test('US5.5 duplicate item -> 409', () => {
+              insomnia.expect(insomnia.response.status).to.equal('Conflict');
+            });
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/items/2"
+        name: US5.6 ADMIN update stock -> 200
+        meta:
+          id: req_cefc00244414425f9d91dad7033e1129
+          created: 1769718644993
+          modified: 1769722775181
+          isPrivate: false
+          description: ""
+          sortKey: -1769718644993
+        method: PUT
+        body:
+          mimeType: application/json
+          text: '{"stock":10}'
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: basic
+          username: "{{ admin_user }}"
+          password: "{{ admin_pass }}"
+        scripts:
+          afterResponse: |
+            insomnia.test('US5.6 update stock -> 200', () => {
+              insomnia.expect(insomnia.response.status).to.equal('OK');
+            });
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: US6 - Achievements verwalten (Admin)
+    meta:
+      id: fld_27e108b65fb846d7adfc020590fb3bc8
+      created: 1769718644995
+      modified: 1769760111828
+      sortKey: -1769718644995
+      description: ""
+    children:
+      - url: "{{ base_url }}/achievements"
+        name: US6.1 Not logged in -> 401
+        meta:
+          id: req_58c00806fd234324a658f28373b5aeb3
+          created: 1769718644997
+          modified: 1769723259114
+          isPrivate: false
+          description: ""
+          sortKey: -1769718645104
+        method: POST
+        body:
+          mimeType: application/json
+          text: '{"code":"ACH_INS_1","name":"First","description":"d"}'
+        headers:
+          - name: Content-Type
+            value: application/json
+        scripts:
+          afterResponse: >
+            insomnia.test('US6.1 not logged in -> 401', () => {
+              insomnia.expect(insomnia.response.status).to.equal('Unauthorized');
+            });
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/achievements"
+        name: US6.2 PLAYER -> 403
+        meta:
+          id: req_150f6677f99e4f8e867897a82c02542c
+          created: 1769718644998
+          modified: 1769723260539
+          isPrivate: false
+          description: ""
+          sortKey: -1769718645054
+        method: POST
+        body:
+          mimeType: application/json
+          text: '{"code":"ACH_INS_1","name":"First","description":"d"}'
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: basic
+          username: "{{ player_user }}"
+          password: "{{ player_pass }}"
+        scripts:
+          afterResponse: |
+            insomnia.test('US6.2 player forbidden -> 403', () => {
+              insomnia.expect(insomnia.response.status).to.equal('Forbidden');
+            });
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/achievements"
+        name: US6.3 ADMIN invalid -> 400
+        meta:
+          id: req_0ecd506be9f64c93ac983832ab66e63a
+          created: 1769718645001
+          modified: 1769723261894
+          isPrivate: false
+          description: ""
+          sortKey: -1769718645029
+        method: POST
+        body:
+          mimeType: application/json
+          text: '{"code":"","name":""}'
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: basic
+          username: "{{ admin_user }}"
+          password: "{{ admin_pass }}"
+        scripts:
+          afterResponse: |
+            insomnia.test('US6.3 invalid achievement -> 400', () => {
+              insomnia.expect(insomnia.response.status).to.equal('Bad Request');
+            });
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/achievements"
+        name: US6.4 ADMIN create achievement -> 201
+        meta:
+          id: req_f9193601a3b249fc8b112e163d4a13ca
+          created: 1769718645003
+          modified: 1769723586955
+          isPrivate: false
+          description: ""
+          sortKey: -1769718645016.5
+        method: POST
+        body:
+          mimeType: application/json
+          text: '{"code":"ACH_INS_1","name":"First","description":"d"}'
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: basic
+          username: "{{ admin_user }}"
+          password: "{{ admin_pass }}"
+        scripts:
+          afterResponse: |
+            insomnia.test('US6.4 create achievement -> 201', () => {
+              insomnia.expect(insomnia.response.status).to.equal('Created');
+            });
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/achievements"
+        name: US6.5 ADMIN duplicate code -> 409
+        meta:
+          id: req_77f3995dc0eb47f2b90ba367531bc482
+          created: 1769718645004
+          modified: 1769759307039
+          isPrivate: false
+          description: ""
+          sortKey: -1769718645004
+        method: POST
+        body:
+          mimeType: application/json
+          text: '{"code":"ACH_INS_1","name":"First","description":"d"}'
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: basic
+          username: "{{ admin_user }}"
+          password: "{{ admin_pass }}"
+        scripts:
+          afterResponse: |
+            insomnia.test('US6.5 duplicate achievement -> 409', () => {
+              insomnia.expect(insomnia.response.status).to.equal('Conflict');
+            });
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_3619c12bb512e3140169cd5a07c090c70f8287bc
+    created: 1769718646997
+    modified: 1769760111819
+  cookies:
+    - id: 36ab7260-a10f-4791-8bce-c23b1ccba542
+      key: JSESSIONID
+      value: 05EBF38685A3A13A6F8EC83D1E769FCE
+      domain: localhost
+      path: /
+      secure: false
+      httpOnly: true
+      hostOnly: true
+environments:
+  name: Base Environment
+  meta:
+    id: env_2a503c0748d24d7f9c1bb65fc5b43e27
+    created: 1769718644955
+    modified: 1769760111826
+    isPrivate: false
+  data:
+    base_url: http://localhost:8080
+    player_user: player
+    player_pass: player
+    admin_user: admin
+    admin_pass: admin
+    user_id: 1
+    item_id: 1
+    achievement_id: 1
