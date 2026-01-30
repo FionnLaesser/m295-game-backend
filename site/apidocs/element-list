@@ -1,0 +1,8 @@
+ch.wiss.m295
+ch.wiss.m295.config
+ch.wiss.m295.controller
+ch.wiss.m295.dto
+ch.wiss.m295.entity
+ch.wiss.m295.exception
+ch.wiss.m295.repository
+ch.wiss.m295.service

@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"ch.wiss.m295"},{"l":"ch.wiss.m295.config"},{"l":"ch.wiss.m295.controller"},{"l":"ch.wiss.m295.dto"},{"l":"ch.wiss.m295.entity"},{"l":"ch.wiss.m295.exception"},{"l":"ch.wiss.m295.repository"},{"l":"ch.wiss.m295.service"}];updateSearchResults();

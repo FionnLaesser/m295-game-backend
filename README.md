@@ -63,6 +63,7 @@ In den meisten Fällen wurden bereits Daten in der Datenbank verändert.
 ---
 
 ## Hinweise
+- Um die Javadocs zu sehen öffne dieses Html im Browser: /site/apidocs/index.html
 - Der Ordner `target/` wird automatisch von Maven erzeugt
 - Für saubere Tests sollte die Datenbank immer frisch gestartet werden
 
