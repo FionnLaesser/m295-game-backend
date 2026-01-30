@@ -45,7 +45,7 @@ Die REST-API läuft standardmässig auf `http://localhost:8080`.
 
 1. Insomnia öffnen  
 2. **Import / Export → Import Data**
-3. Die Datei **Insomnia.yaml** auswählen
+3. Die Datei **InsomniaTest.yaml** auswählen
 4. Alle Requests markieren und ausführen
 
 ### Erwartetes Ergebnis
